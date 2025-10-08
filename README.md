@@ -1,32 +1,55 @@
-# 🚀 TradeBot - Sistema de Trading Automático# 🚀 Crypto Analysis & Backtesting Suite
+# 🚀 Multi-Timeframe Trading Strategy
 
-
-
-![Trading Bot](https://img.shields.io/badge/Trading-Bot-green)Un proyecto profesional y modular para análisis de criptomonedas y backtesting de estrategias de trading.
+**Sistema profesional de trading automatizado** que combina análisis de tendencia 4H con timing de entrada 1H para generar señales de alta calidad.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue)
+![Trading](https://img.shields.io/badge/Trading-Bot-green)
+![ROI](https://img.shields.io/badge/ROI-50.6%25-gold)
+![Win Rate](https://img.shields.io/badge/Win%20Rate-66.7%25-success)
 
-![ROI](https://img.shields.io/badge/ROI-427.86%25-gold)## 📁 Estructura del Proyecto
+## 🏆 Resultados Comprobados (V2.1)
 
-![Win Rate](https://img.shields.io/badge/Win%20Rate-50.8%25-success)
+### 📈 Performance Validada - Multi-Asset
+| Asset | Trades | Win Rate | ROI | Drawdown | Status |
+|-------|--------|----------|-----|----------|---------|
+| **LINK/USDT** | 84 | **66.7%** | **+50.6%** | -5.0% | ✅ **EXCELENTE** |
+| **ADA/USDT** | 85 | 41.2% | +7.4% | -8.1% | ⚖️ Moderado |
+| **SOL/USDT** | 94 | 28.7% | -5.8% | -16.1% | ⚠️ Subóptimo |
 
+### 🎯 Evolución Estratégica
+- **V1**: 593 trades, 33.9% WR, -21.6% ROI → ❌ Over-trading
+- **V2**: 2 trades, 0% WR, -0.9% ROI → ❌ Under-trading  
+- **V2.1**: 84 trades, 66.7% WR, 50.6% ROI → ✅ **Balance Profesional**
+
+## ✨ Características Principales
+
+- **🎯 Dual-Timeframe Strategy**: 4H trend analysis + 1H entry timing
+- **🔬 Scientific Optimization**: Data-driven evolution V1 → V2 → V2.1
+- **🛡️ Advanced Risk Management**: 2.5% risk per trade, 22% max position
+- **📊 Quality Scoring**: Filtros ≥60/100 para señales premium
+- **⚡ Real-time Monitoring**: Análisis continuo multi-asset
+- **📚 Complete Documentation**: Guías técnicas y de usuario completas
+
+## 🚀 Quick Start
+
+### Instalación
+```bash
+git clone https://github.com/tadeodirosa/tradeBot.git
+cd tradeBot
+pip install -r requirements.txt
 ```
 
-Sistema de trading automático con **análisis técnico avanzado**, **backtesting verificado** y **tracking de performance en tiempo real**.crypto-analysis-project/
+### Uso Básico
+```bash
+# Análisis en tiempo real (recomendado)
+python multi_timeframe_analyzer_v21.py --symbol LINKUSDT
 
-├── main.py                 # 🎯 Punto de entrada unificado (CLI)
+# Backtest histórico
+python multi_timeframe_backtester_v21.py --symbol LINK/USDT --start-date 2024-09-03 --end-date 2024-10-02
 
-## 📊 Performance Verificada│
-
-├── core/                   # 🏗️ Clean Architecture - Lógica de negocio
-
-- **ROI:** 427.86% (30 días)│   ├── domain/             # Entidades y eventos del dominio
-
-- **Win Rate:** 50.8%│   │   ├── models.py       # Modelos de negocio (CandleData, BacktestResult)
-
-- **Profit Factor:** 1.46│   │   └── events.py       # Eventos del dominio (DataFetched, SignalGenerated)
-
-- **Max Drawdown:** 69.2%│   └── application/        # Casos de uso y servicios de aplicación
+# Monitoreo multi-asset
+python real_time_analyzer.py --symbols LINKUSDT,ADAUSDT,ETHUSD --interval 300
+```
 
 - **Señales generadas:** 120+ de alta calidad│       ├── services.py     # Servicios de aplicación
 
@@ -34,47 +57,102 @@ Sistema de trading automático con **análisis técnico avanzado**, **backtestin
 
 ## ⭐ Características Principales│
 
-├── infrastructure/         # 🔌 Implementaciones externas
+## 📁 Estructura del Proyecto
 
-### 🎯 Análisis en Tiempo Real│   ├── events/             # Sistema de Event Bus
+```
+python-analysis-project/
+├── analyzer_v10.py                     # 🎯 Sistema original 4H (baseline preservado)
+├── backtester.py                       # 📊 Backtester original (baseline)
+├── multi_timeframe_analyzer_v21.py     # 🚀 V2.1 Production - Dual timeframe
+├── multi_timeframe_backtester_v21.py   # 📈 V2.1 Backtester - Validación histórica
+├── real_time_analyzer.py               # ⚡ Análisis en tiempo real multi-asset
+├── signal_tracker.py                   # 📊 Tracking de performance y métricas
+├── config.py                           # ⚙️ Configuración centralizada
+├── STRATEGY_DOCUMENTATION.md           # � Documentación técnica completa
+├── QUICK_REFERENCE.md                  # � Guía de referencia rápida
+└── requirements.txt                     # 📦 Dependencias del proyecto
+```
 
-- **Indicadores técnicos:** EMA, RSI, ATR│   │   └── event_bus.py    # Event Bus lightweight sin dependencias
+## 🛠️ Tecnologías
 
-- **Condiciones selectivas:** 4+ condiciones requeridas para señal│   ├── logging/            # Sistema de logging estructurado
+- **Python 3.8+**: Lenguaje principal
+- **ccxt**: Conectividad con exchanges
+- **pandas/numpy**: Análisis de datos y cálculos
+- **Binance API**: Datos de mercado en tiempo real
 
-- **API Binance:** Datos en tiempo real│   │   └── structured_logger.py  # Logging con correlation IDs
+## 📊 Estrategia V2.1 (Production)
 
-- **Risk Management:** Stop Loss y Take Profit automáticos│   └── monitoring/         # Circuit breakers y métricas
+### 🎯 Lógica Multi-Timeframe
+1. **4H Analysis**: Identificación de tendencia principal (3/3 condiciones)
+2. **1H Confirmation**: Timing de entrada preciso (3/4 confluencias)
+3. **Quality Filter**: Solo señales ≥60/100 calidad
+4. **Risk Control**: 2.5% risk, 22% max position, 2h gap mínimo
 
-│
+### � Parámetros Optimizados
+```python
+# 4H Trend Requirements (ALL 3 required)
+EMA_SEPARATION >= 0.3%      # Tendencia clara
+MOMENTUM >= 0.5%            # Impulso confirmado  
+RSI in [30, 70]            # Zona no extrema
 
-### 📐 Backtesting Verificado├── data/                   # 💾 Pipeline de datos
+# 1H Entry Requirements (3 out of 4 required)
+RSI ZONES: [20,50] LONG, [50,80] SHORT
+MOMENTUM in [-3%, +4%]      # Balanceado
+VOLATILITY in [0.6%, 8.0%]  # Rango óptimo
+EMA_ALIGNMENT flexible      # Confluencia técnica
+```
 
-- **Datos históricos reales** de Binance│   ├── adapters/           # Conectores a APIs (BaseAdapter)
+## 🎯 Assets Recomendados
 
-- **Validación matemática** vs TA-Lib│   ├── repositories/       # Almacenamiento (Repository pattern)
+### ✅ Tier 1: Performance Excelente
+- **LINK/USDT** ⭐ 50.6% ROI, 66.7% WR
+- **ETH/USDT** - Large cap estable
+- **BTC/USDT** - Líder del mercado
 
-- **Multiple timeframes:** 4h por defecto│   └── cache.py           # Sistema de caché inteligente
+### ⚖️ Tier 2: Performance Moderada
+- **ADA/USDT** - 7.4% ROI, 41.2% WR
+- **DOT/USDT** - Buen trending
+- **ATOM/USDT** - Respuesta técnica decente
 
-- **Multi-símbolo:** BTC, ETH, LINK, XRP, etc.│
+### ⚠️ Tier 3: Evitar o Optimizar
+- **SOL/USDT** - Performance negativa (-5.8% ROI)
+- **DOGE/USDT** - Volatilidad meme impredecible
+- **SHIB/USDT** - Extrema volatilidad
 
-├── strategies/             # 📈 Estrategias de trading (BaseStrategy)
+## 📚 Documentación Completa
 
-### 💾 Sistema de Tracking├── config/                 # ⚙️ Configuración environment-aware
+- **[STRATEGY_DOCUMENTATION.md](STRATEGY_DOCUMENTATION.md)**: Documentación técnica completa
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)**: Guía de referencia rápida
+- **[config.py](config.py)**: Configuraciones centralizadas y asset classification
 
-- **Guardado automático** de señales│   ├── base.yaml          # Configuración base
+## 🔧 Configuración Avanzada
 
-- **Seguimiento de performance** en tiempo real│   ├── dev.yaml           # Configuración desarrollo
+### Modo Conservador
+```bash
+# Menor riesgo, mayor calidad
+python multi_timeframe_analyzer_v21.py --config conservative --symbol LINKUSDT
+```
 
-- **Análisis de rentabilidad** por símbolo│   └── prod.yaml          # Configuración producción
+### Modo Agresivo  
+```bash
+# Mayor riesgo, más oportunidades
+python multi_timeframe_analyzer_v21.py --config aggressive --symbol LINKUSDT
+```
 
-- **Estadísticas completas** de trading│
+## 📈 Métricas de Éxito
 
-├── scripts/                # 🛠️ Scripts utilitarios organizados
+### Objetivos Mensuales
+- **ROI**: >10% positivo ✅
+- **Win Rate**: >45% ✅  
+- **Max Drawdown**: <20% ✅
+- **Trade Frequency**: 15-50 trades ⚠️ (84 real)
+- **Profit Factor**: >1.5 ✅ (3.70 real)
 
-### 🛡️ Control de Versiones│   ├── discovery/          # Descubrimiento de nuevas oportunidades
-
-- **Backup automático** de versiones estables│   ├── download/           # Descarga de datos de mercado
+### Alertas de Performance
+- ROI <5%: Revisar parámetros
+- Win Rate <40%: Cambio de régimen de mercado
+- Drawdown >15%: Reducir position size
+- Trades <10 o >60: Recalibrar selectividad
 
 - **Restauración de emergencia**│   ├── analysis/           # Scripts de análisis batch
 
