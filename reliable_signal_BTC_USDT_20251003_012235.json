@@ -1,0 +1,67 @@
+{
+  "symbol": "BTC/USDT",
+  "direction": "LONG",
+  "strength": 75,
+  "entry_price": 120240.0,
+  "stop_loss": 118652.67857142857,
+  "take_profit": 122356.42857142857,
+  "risk_reward_ratio": 1.3333333333333242,
+  "risk_usdt": 33.00319004847461,
+  "reward_usdt": 44.00425339796584,
+  "position_size_usdt": 100.0,
+  "leverage": 25,
+  "total_commission_usdt": 2.9999999999999996,
+  "net_reward_usdt": 41.00425339796584,
+  "signal_reasons": [
+    "Precio > EMA21",
+    "EMA9 > EMA21",
+    "Volumen alto",
+    "RSI presi\u00f3n venta (89.2)"
+  ],
+  "market_verification": {
+    "data_source": "Binance API Real Time",
+    "last_ohlc_price": 120240.0,
+    "ticker_price": 120240.0,
+    "price_difference_pct": 0.0,
+    "volume_24h_usdt": 2115195913.5348716,
+    "bid": 120240.0,
+    "ask": 120240.01,
+    "spread_pct": 8.316699929109539e-06,
+    "data_timestamp": "2025-10-03T01:22:35.587895",
+    "records_count": 100
+  },
+  "atr_verification": {
+    "calculation_method": "Manual TR calculation -> Simple Moving Average",
+    "atr_period": 14,
+    "current_atr_usdt": 1058.2142857142858,
+    "current_atr_percentage": 0.8800850679593195,
+    "current_price": 120240.0,
+    "last_5_tr_values": [
+      1394.3999999999942,
+      1662.4400000000023,
+      841.5399999999936,
+      730.8999999999942,
+      141.58000000000175
+    ],
+    "last_5_atr_values": [
+      1149.1192857142855,
+      1190.3578571428577,
+      1192.5307142857148,
+      1118.7764285714281,
+      1058.2142857142858
+    ],
+    "min_atr_last_20": 766.1571428571416,
+    "max_atr_last_20": 1192.5307142857148,
+    "avg_atr_last_20": 1027.3766785714279,
+    "volatility_classification": "Muy Baja (< 1%)",
+    "calculation_timestamp": "2025-10-03T01:22:35.607849"
+  },
+  "technical_indicators": {
+    "rsi": 89.18036687749091,
+    "ema_9": 119365.11257391713,
+    "ema_21": 117295.66181380187,
+    "ema_50": 115014.2839499876,
+    "current_price": 120240.0
+  },
+  "signal_timestamp": "2025-10-03T01:22:35.609901"
+}

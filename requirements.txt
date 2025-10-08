@@ -1,0 +1,6 @@
+pandas
+pandas-ta
+requests
+backtesting
+yfinance
+ccxt

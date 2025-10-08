@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "symbol": "SOL_USDT",
+    "timeframe": "4h",
+    "start_date": "2025-07-11T00:00:00",
+    "end_date": "2025-10-02T04:00:00",
+    "total_bars": 500,
+    "generated_at": "20251002_192944"
+  },
+  "performance_metrics": {
+    "total_return_pct": 0.0,
+    "annualized_return_pct": 0.0,
+    "win_rate_pct": NaN,
+    "num_trades": 0,
+    "sharpe_ratio": NaN,
+    "max_drawdown_pct": -0.0,
+    "sortino_ratio": 0.0,
+    "calmar_ratio": 0.0,
+    "volatility_pct": 0.0,
+    "expectancy_pct": 0.0
+  },
+  "risk_metrics": {
+    "max_consecutive_wins": 0,
+    "max_consecutive_losses": 0,
+    "recovery_factor": 0.0,
+    "ulcer_index": 0.0
+  },
+  "trade_metrics": {
+    "best_trade_pct": NaN,
+    "worst_trade_pct": NaN,
+    "avg_trade_pct": NaN,
+    "profit_factor": null
+  }
+}
