@@ -4,11 +4,14 @@ Usa las MISMAS condiciones optimizadas del backtester verified_backtester.py
 ROI: 427.86% | Win Rate: 50.8% | Profit Factor: 1.46
 
 NUEVO: Auto-guarda señales para tracking de performance
+ACTUALIZADO: Soporte para múltiples timeframes (1h, 4h)
 """
 
 import requests
 import pandas as pd
 import numpy as np
+import argparse
+import sys
 from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
@@ -17,9 +20,13 @@ warnings.filterwarnings('ignore')
 from signal_tracker import SignalTracker
 
 class RealTimeAnalyzer:
-    def __init__(self):
+    def __init__(self, timeframe: str = '4h'):
+        # Validar timeframe
+        if timeframe not in ['1h', '4h']:
+            raise ValueError(f"Timeframe '{timeframe}' no soportado. Use '1h' o '4h'")
+        
         self.config = {
-            'timeframe': '4h',
+            'timeframe': timeframe,
             'limit': 100,  # Suficientes datos para indicadores
             'ema_fast': 9,
             'ema_slow': 21,
@@ -32,6 +39,12 @@ class RealTimeAnalyzer:
         
         # Inicializar tracker de señales
         self.signal_tracker = SignalTracker()
+        
+        # Mapeo de timeframes para API de Binance
+        self.binance_intervals = {
+            '1h': '1h',
+            '4h': '4h'
+        }
     
     def get_binance_data(self, symbol: str) -> pd.DataFrame:
         """Obtener datos en tiempo real de Binance."""
@@ -39,7 +52,7 @@ class RealTimeAnalyzer:
             url = "https://api.binance.com/api/v3/klines"
             params = {
                 'symbol': symbol,
-                'interval': self.config['timeframe'],
+                'interval': self.binance_intervals[self.config['timeframe']],
                 'limit': self.config['limit']
             }
             
@@ -330,16 +343,55 @@ class RealTimeAnalyzer:
 
 def main():
     """Función principal para análisis."""
-    analyzer = RealTimeAnalyzer()
     
-    # Símbolo por defecto
-    symbol = "LINKUSDT"
+    # Configurar parser de argumentos
+    parser = argparse.ArgumentParser(description='TradeBot Real-Time Analyzer')
+    parser.add_argument('--timeframe', '-t', 
+                       choices=['1h', '4h'], 
+                       default='4h',
+                       help='Timeframe para análisis (default: 4h)')
+    parser.add_argument('--symbol', '-s',
+                       default='LINKUSDT',
+                       help='Símbolo a analizar (default: LINKUSDT)')
     
-    print(f"🚀 ANALIZADOR EN TIEMPO REAL")
+    # Si hay argumentos de línea de comandos, usarlos
+    if len(sys.argv) > 1:
+        args = parser.parse_args()
+        timeframe = args.timeframe
+        symbol = args.symbol
+        
+        print(f"🚀 ANALIZADOR EN TIEMPO REAL")
+        print(f"🔧 Modo línea de comandos:")
+        print(f"   Timeframe: {timeframe}")
+        print(f"   Símbolo: {symbol}")
+        
+    else:
+        # Modo interactivo (mantener compatibilidad)
+        print(f"🚀 ANALIZADOR EN TIEMPO REAL")
+        print("⏰ Timeframes disponibles:")
+        print("   1h - Análisis en 1 hora (más granular)")  
+        print("   4h - Análisis en 4 horas (por defecto)")
+        
+        timeframe_input = input("🕐 Timeframe (1h/4h, enter para 4h): ").strip().lower()
+        if timeframe_input in ['1h', '4h']:
+            timeframe = timeframe_input
+        else:
+            timeframe = '4h'  # Default para compatibilidad
+        
+        symbol_input = input("💰 Símbolo (enter para LINKUSDT): ").strip().upper()
+        symbol = symbol_input or "LINKUSDT"
+        
+        if symbol.endswith('/USDT'):
+            symbol = symbol.replace('/', '')  # Convertir BTC/USDT → BTCUSDT
+    
     print(f"🎯 Sistema optimizado: ROI 427.86% | Win Rate 50.8%")
     print(f"📈 Condiciones selectivas: 4+ condiciones requeridas")
+    print(f"⏰ Timeframe seleccionado: {timeframe}")
     
     try:
+        # Crear analyzer con timeframe especificado
+        analyzer = RealTimeAnalyzer(timeframe)
+        
         # Analizar señal
         result = analyzer.analyze_signal(symbol)
         

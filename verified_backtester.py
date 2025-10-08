@@ -23,6 +23,8 @@ import ccxt
 import pandas as pd
 import numpy as np
 import json
+import argparse
+import sys
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, asdict
@@ -75,10 +77,11 @@ class VerifiedTrade:
 class ReliableBacktester:
     """Backtester con máxima fiabilidad usando datos reales verificados."""
     
-    def __init__(self, symbol: str, start_date: str, end_date: str):
+    def __init__(self, symbol: str, start_date: str, end_date: str, timeframe: str = '4h'):
         self.symbol = symbol
         self.start_date = datetime.fromisoformat(start_date)
         self.end_date = datetime.fromisoformat(end_date)
+        self.timeframe = timeframe
         
         # Configuración optimizada para balance riesgo/retorno
         self.config = {
@@ -89,7 +92,7 @@ class ReliableBacktester:
             'atr_period': 14,
             'stop_loss_atr_multiplier': 1.2,  # Balance entre 1.0 y 1.5
             'take_profit_atr_multiplier': 2.0,
-            'timeframe': '4h',
+            'timeframe': timeframe,  # Usar el parámetro pasado
             'min_atr_percentage': 0.5,  # Mínimo 0.5% ATR
             'max_atr_percentage': 8.0,  # Máximo 8% ATR
             'max_risk_per_trade': 0.03,  # 3% de riesgo por trade (aumentado de 2%)
@@ -121,11 +124,21 @@ class ReliableBacktester:
         try:
             print("📡 Obteniendo datos históricos verificados...")
             
-            # Calcular cuántos registros necesitamos
+            # Calcular cuántos registros necesitamos según timeframe
             days_diff = (self.end_date - self.start_date).days
-            estimated_bars = int(days_diff * 24 / 4) + 100  # 4h timeframe + buffer
+            
+            # Mapeo de timeframes a horas
+            timeframe_hours = {
+                '1h': 1,
+                '4h': 4,
+                '1d': 24
+            }
+            
+            hours_per_bar = timeframe_hours.get(self.timeframe, 4)
+            estimated_bars = int(days_diff * 24 / hours_per_bar) + 100  # + buffer
             
             print(f"📊 Solicitando {estimated_bars} registros históricos")
+            print(f"⏰ Timeframe: {self.timeframe} ({hours_per_bar}h por vela)")
             
             # Obtener datos desde una fecha anterior para tener suficiente historial
             extended_start = self.start_date - timedelta(days=30)
@@ -223,8 +236,14 @@ class ReliableBacktester:
         if extreme_gaps > 0:
             issues.append(f"{extreme_gaps} gaps extremos (>20%) detectados")
         
-        # Verificar continuidad temporal
-        expected_interval = pd.Timedelta(hours=4)  # Para timeframe 4h
+        # Verificar continuidad temporal (dinámico según timeframe)
+        timeframe_hours = {
+            '1h': 1,
+            '4h': 4,
+            '1d': 24
+        }
+        hours_per_bar = timeframe_hours.get(self.config['timeframe'], 4)
+        expected_interval = pd.Timedelta(hours=hours_per_bar)  # Dinámico según timeframe
         time_gaps = df.index.to_series().diff()
         irregular_intervals = (time_gaps > expected_interval * 1.5).sum()
         
@@ -753,46 +772,85 @@ def main():
     print("📊 Sistema optimizado: ROI 427.86% | Win Rate 50.8% | PF 1.46")
     print("=" * 60)
     
-    # Solicitar parámetros al usuario
-    try:
-        symbol = input("💰 Símbolo (ej: BTC/USDT, ETH/USDT): ").strip().upper()
-        if not symbol:
-            symbol = "LINK/USDT"  # Default
+    # Configurar parser de argumentos
+    parser = argparse.ArgumentParser(description='TradeBot Verified Backtester')
+    parser.add_argument('--timeframe', '-t', 
+                       choices=['1h', '4h'], 
+                       default='4h',
+                       help='Timeframe para análisis (default: 4h)')
+    parser.add_argument('--symbol', '-s',
+                       help='Símbolo a analizar (ej: LINK/USDT)')
+    parser.add_argument('--start-date',
+                       help='Fecha inicio (YYYY-MM-DD)')
+    parser.add_argument('--end-date', 
+                       help='Fecha fin (YYYY-MM-DD)')
+    
+    # Si hay argumentos de línea de comandos, usarlos
+    if len(sys.argv) > 1:
+        args = parser.parse_args()
+        timeframe = args.timeframe
+        symbol = args.symbol or "LINK/USDT"
+        start_date = args.start_date or (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+        end_date = args.end_date or datetime.now().strftime("%Y-%m-%d")
         
-        if "/" not in symbol:
-            symbol = f"{symbol}/USDT"  # Auto-agregar /USDT si falta
-        
-        start_date = input("📅 Fecha inicio (YYYY-MM-DD, enter para 30 días atrás): ").strip()
-        if not start_date:
-            # 30 días atrás por defecto
-            start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
-        
-        end_date = input("📅 Fecha fin (YYYY-MM-DD, enter para hoy): ").strip()
-        if not end_date:
-            end_date = datetime.now().strftime("%Y-%m-%d")
-        
-        print(f"\n🎯 Ejecutando backtest:")
+        print(f"🔧 Modo línea de comandos:")
+        print(f"   Timeframe: {timeframe}")
         print(f"   Símbolo: {symbol}")
         print(f"   Período: {start_date} → {end_date}")
-        print("=" * 60)
         
-    except KeyboardInterrupt:
-        print("\n❌ Cancelado por usuario")
-        return
-    except Exception as e:
-        print(f"❌ Error en parámetros: {e}")
-        return
+    else:
+        # Modo interactivo (mantener compatibilidad)
+        try:
+            # Preguntar por timeframe primero
+            print("⏰ Timeframes disponibles:")
+            print("   1h - Análisis en 1 hora (más granular)")
+            print("   4h - Análisis en 4 horas (por defecto)")
+            
+            timeframe_input = input("🕐 Timeframe (1h/4h, enter para 4h): ").strip().lower()
+            if timeframe_input in ['1h', '4h']:
+                timeframe = timeframe_input
+            else:
+                timeframe = '4h'  # Default para compatibilidad
+            
+            symbol = input("💰 Símbolo (ej: BTC/USDT, ETH/USDT): ").strip().upper()
+            if not symbol:
+                symbol = "LINK/USDT"  # Default
+            
+            if "/" not in symbol:
+                symbol = f"{symbol}/USDT"  # Auto-agregar /USDT si falta
+            
+            start_date = input("📅 Fecha inicio (YYYY-MM-DD, enter para 30 días atrás): ").strip()
+            if not start_date:
+                # 30 días atrás por defecto
+                start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+            
+            end_date = input("📅 Fecha fin (YYYY-MM-DD, enter para hoy): ").strip()
+            if not end_date:
+                end_date = datetime.now().strftime("%Y-%m-%d")
+        
+        except KeyboardInterrupt:
+            print("\n❌ Cancelado por usuario")
+            return
+        except Exception as e:
+            print(f"❌ Error en parámetros: {e}")
+            return
+    
+    print(f"\n🎯 Ejecutando backtest:")
+    print(f"   Timeframe: {timeframe}")
+    print(f"   Símbolo: {symbol}")
+    print(f"   Período: {start_date} → {end_date}")
+    print("=" * 60)
     
     try:
-        # Crear backtester
-        backtester = ReliableBacktester(symbol, start_date, end_date)
+        # Crear backtester con timeframe
+        backtester = ReliableBacktester(symbol, start_date, end_date, timeframe)
         
         # Ejecutar backtest
         results = backtester.execute_verified_backtest()
         
-        # Guardar resultados
+        # Guardar resultados con timeframe en el nombre
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"verified_backtest_{symbol.replace('/', '_')}_{start_date}_{end_date}_{timestamp}.json"
+        filename = f"verified_backtest_{symbol.replace('/', '_')}_{timeframe}_{start_date}_{end_date}_{timestamp}.json"
         
         with open(filename, 'w') as f:
             json.dump(results, f, indent=2, default=str)

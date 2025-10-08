@@ -41,7 +41,7 @@ class SignalTracker:
             print("⏳ No hay señal para guardar")
             return
         
-        # Crear registro de señal
+        # Crear registro de señal (compatible con multi-timeframe)
         signal_record = {
             'id': f"{signal_result['symbol']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             'symbol': signal_result['symbol'],
@@ -53,10 +53,20 @@ class SignalTracker:
             'take_profit': signal_result.get('take_profit'),
             'position_size': signal_result.get('position_size'),
             'risk_amount': signal_result.get('risk_amount'),
-            'indicators': signal_result['indicators'],
+            
+            # Compatibilidad con multi-timeframe analyzer
+            'indicators': signal_result.get('indicators', signal_result.get('indicators_1h', {})),
+            'indicators_4h': signal_result.get('indicators_4h', {}),
+            'indicators_1h': signal_result.get('indicators_1h', {}),
+            'trend_4h': signal_result.get('trend_4h', {}),
+            'entry_1h': signal_result.get('entry_1h', {}),
+            
             'conditions_met': {
-                'long': signal_result['long_conditions'],
-                'short': signal_result['short_conditions']
+                'trend_4h': signal_result.get('trend_4h', {}).get('conditions_met', 0),
+                'entry_1h': signal_result.get('entry_1h', {}).get('conditions_met', 0),
+                # Compatibilidad con analyzer original
+                'long': signal_result.get('long_conditions', 0),
+                'short': signal_result.get('short_conditions', 0)
             },
             'reasons': [r for r in signal_result['reasons'] if '✅' in r],
             
